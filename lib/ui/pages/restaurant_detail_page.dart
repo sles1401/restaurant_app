@@ -5,6 +5,7 @@ import '../../provider/restaurant_detail_provider.dart';
 import '../../provider/favorite_provider.dart';
 import '../../utils/result_state.dart';
 import '../../data/api/restaurant_api_service.dart';
+import '../../data/model/restaurant_hive_model.dart';
 import '../widgets/loading_indicator.dart';
 
 class RestaurantDetailPage extends StatelessWidget {
@@ -22,7 +23,6 @@ class RestaurantDetailPage extends StatelessWidget {
             id: id,
           ),
         ),
-        // FavoriteProvider assumed to be already provided at higher level
       ],
       child: Scaffold(
         appBar: AppBar(
@@ -32,9 +32,7 @@ class RestaurantDetailPage extends StatelessWidget {
               builder: (context, detailProvider, favoriteProvider, _) {
                 final result = detailProvider.result;
 
-                if (result == null) {
-                  return const SizedBox();
-                }
+                if (result == null) return const SizedBox();
 
                 final restaurant = result.restaurant;
                 final isFavorite = favoriteProvider.isFavorite(restaurant.id);
@@ -49,10 +47,9 @@ class RestaurantDetailPage extends StatelessWidget {
                       await favoriteProvider.removeFavorite(restaurant.id);
                     } else {
                       await favoriteProvider.addFavorite(
-                        Restaurant(
+                        RestaurantHiveModel(
                           id: restaurant.id,
                           name: restaurant.name,
-                          description: restaurant.description,
                           pictureId: restaurant.pictureId,
                           city: restaurant.city,
                           rating: restaurant.rating,

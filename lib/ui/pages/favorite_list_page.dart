@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../provider/favorite_provider.dart';
-import '../../data/model/restaurant_list.dart';
+import '../../data/model/restaurant_hive_model.dart';
 
 class FavoriteListPage extends StatelessWidget {
   const FavoriteListPage({super.key});
@@ -31,7 +31,7 @@ class FavoriteListPage extends StatelessWidget {
                   title: Text(restaurant.name),
                   subtitle: Text(restaurant.city),
                   onTap: () {
-                    // Navigate to restaurant detail page
+                    // Navigasi ke detail restoran
                     Navigator.pushNamed(
                       context,
                       '/restaurant_detail',
