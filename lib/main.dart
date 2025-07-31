@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:timezone/data/latest.dart' as tz;
+import 'utils/notification_helper.dart';
+
 import 'provider/theme_provider.dart';
 import 'provider/restaurant_provider.dart';
 import 'provider/favorite_provider.dart';
@@ -13,6 +16,7 @@ import 'data/model/restaurant_hive_model.dart';
 
 import 'ui/pages/restaurant_list_page.dart';
 import 'ui/pages/favorite_list_page.dart';
+import 'ui/pages/settings_page.dart'; 
 import 'utils/theme.dart';
 
 void main() async {
@@ -27,6 +31,9 @@ void main() async {
 
   Hive.registerAdapter(RestaurantHiveModelAdapter());
   await Hive.openBox<RestaurantHiveModel>('favorite_restaurants');
+
+  tz.initializeTimeZones();
+  NotificationHelper().initNotifications();
 
   runApp(const MyApp());
 }
@@ -57,7 +64,10 @@ class MyApp extends StatelessWidget {
                 ? ThemeMode.dark
                 : ThemeMode.light,
             home: const RestaurantListPage(),
-            routes: {'/favorite_list': (context) => const FavoriteListPage()},
+            routes: {
+              '/favorite_list': (context) => const FavoriteListPage(),
+              '/settings': (context) => const SettingsPage(),
+            },
           );
         },
       ),

@@ -17,25 +17,34 @@ class RestaurantListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Restaurant"),
-actions: [
-  IconButton(
-    icon: Icon(
-      themeProvider.isDarkTheme ? Icons.light_mode : Icons.dark_mode,
-    ),
-    onPressed: () {
-      themeProvider.toggleTheme();
-    },
-  ),
-  IconButton(
-    icon: const Icon(Icons.favorite),
-    onPressed: () {
-      Navigator.pushNamed(context, '/favorite_list');
-    },
-  ),
-],
+        actions: [
+          IconButton(
+            icon: Icon(
+              themeProvider.isDarkTheme ? Icons.light_mode : Icons.dark_mode,
+            ),
+            onPressed: () {
+              themeProvider.toggleTheme();
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.pushNamed(context, '/favorite_list');
+            },
+          ),
+          // ✅ Tombol menuju SettingsPage
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: 'Pengaturan',
+            onPressed: () {
+              Navigator.pushNamed(context, '/settings');
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
+          // Search bar
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
@@ -59,6 +68,7 @@ actions: [
               },
             ),
           ),
+          // List restoran
           Expanded(
             child: Consumer<RestaurantProvider>(
               builder: (context, state, _) {
