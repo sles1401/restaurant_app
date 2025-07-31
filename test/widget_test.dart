@@ -1,10 +1,3 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -18,7 +11,7 @@ class CounterWidget extends StatefulWidget {
 class _CounterWidgetState extends State<CounterWidget> {
   int _counter = 0;
 
-  void _incrementCounter() {
+  void _tambahCounter() {
     setState(() {
       _counter++;
     });
@@ -32,10 +25,10 @@ class _CounterWidgetState extends State<CounterWidget> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text('$_counter', key: const Key('counterText')),
+              Text('$_counter', key: const Key('teksCounter')),
               IconButton(
                 icon: const Icon(Icons.add),
-                onPressed: _incrementCounter,
+                onPressed: _tambahCounter,
               ),
             ],
           ),
@@ -46,15 +39,21 @@ class _CounterWidgetState extends State<CounterWidget> {
 }
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('Counter bertambah ketika tombol ditekan', (
+    WidgetTester tester,
+  ) async {
+    // Render widget CounterWidget
     await tester.pumpWidget(const CounterWidget());
 
+    // Pastikan nilai awal 0 muncul dan 1 tidak muncul
     expect(find.text('0'), findsOneWidget);
     expect(find.text('1'), findsNothing);
 
+    // Tekan tombol tambah (ikon plus)
     await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.pump(); 
 
+    // Pastikan nilai 1 sekarang muncul dan 0 hilang
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
   });
