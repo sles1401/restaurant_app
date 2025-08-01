@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:timezone/data/latest.dart' as tz;
 import 'utils/notification_helper.dart';
+import 'utils/preferences_helper.dart';
 
 import 'provider/theme_provider.dart';
 import 'provider/restaurant_provider.dart';
@@ -16,12 +17,13 @@ import 'data/model/restaurant_hive_model.dart';
 
 import 'ui/pages/restaurant_list_page.dart';
 import 'ui/pages/favorite_list_page.dart';
-import 'ui/pages/settings_page.dart'; 
+import 'ui/pages/settings_page.dart';
 import 'utils/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Inisialisasi Hive untuk favorit
   if (!kIsWeb) {
     final dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
@@ -32,20 +34,28 @@ void main() async {
   Hive.registerAdapter(RestaurantHiveModelAdapter());
   await Hive.openBox<RestaurantHiveModel>('favorite_restaurants');
 
+  // Inisialisasi timezone & notifikasi
   tz.initializeTimeZones();
   NotificationHelper().initNotifications();
 
-  runApp(const MyApp());
+  // Inisialisasi PreferencesHelper untuk ThemeProvider
+  final preferencesHelper = PreferencesHelper();
+
+  runApp(MyApp(preferencesHelper: preferencesHelper));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final PreferencesHelper preferencesHelper;
+
+  const MyApp({super.key, required this.preferencesHelper});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(preferencesHelper: preferencesHelper),
+        ),
         ChangeNotifierProvider(
           create: (_) => RestaurantProvider(apiService: RestaurantApiService()),
         ),
