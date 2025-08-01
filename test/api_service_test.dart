@@ -58,6 +58,10 @@ class RestaurantApiServiceMock extends RestaurantApiService {
           Category(name: 'Teh Manis'),
           Category(name: 'Kopi'),
         ],
+        categories: [
+          Category(name: 'Western'),
+          Category(name: 'Casual Dining'),
+        ],
       ),
     );
   }

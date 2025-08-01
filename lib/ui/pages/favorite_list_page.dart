@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../provider/favorite_provider.dart';
 import '../../data/model/restaurant_hive_model.dart';
+import 'restaurant_detail_page.dart';
 
 class FavoriteListPage extends StatelessWidget {
   const FavoriteListPage({super.key});
@@ -9,9 +10,7 @@ class FavoriteListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Favorite Restaurants'),
-      ),
+      appBar: AppBar(title: const Text('Favorite Restaurants')),
       body: Consumer<FavoriteProvider>(
         builder: (context, favoriteProvider, _) {
           if (favoriteProvider.state == FavoriteState.Loading) {
@@ -32,10 +31,12 @@ class FavoriteListPage extends StatelessWidget {
                   subtitle: Text(restaurant.city),
                   onTap: () {
                     // Navigasi ke detail restoran
-                    Navigator.pushNamed(
+                    Navigator.push(
                       context,
-                      '/restaurant_detail',
-                      arguments: restaurant.id,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            RestaurantDetailPage(id: restaurant.id),
+                      ),
                     );
                   },
                 );

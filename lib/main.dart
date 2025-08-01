@@ -11,6 +11,7 @@ import 'utils/preferences_helper.dart';
 import 'provider/theme_provider.dart';
 import 'provider/restaurant_provider.dart';
 import 'provider/favorite_provider.dart';
+import 'provider/daily_reminder_provider.dart';
 
 import 'data/api/restaurant_api_service.dart';
 import 'data/model/restaurant_hive_model.dart';
@@ -20,7 +21,7 @@ import 'ui/pages/favorite_list_page.dart';
 import 'ui/pages/settings_page.dart';
 import 'utils/theme.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Inisialisasi Hive untuk favorit
@@ -36,7 +37,7 @@ void main() async {
 
   // Inisialisasi timezone & notifikasi
   tz.initializeTimeZones();
-  NotificationHelper().initNotifications();
+  await NotificationHelper().initNotifications();
 
   // Inisialisasi PreferencesHelper untuk ThemeProvider
   final preferencesHelper = PreferencesHelper();
@@ -59,9 +60,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => RestaurantProvider(apiService: RestaurantApiService()),
         ),
-        ChangeNotifierProvider(
-          create: (_) => FavoriteProvider(),
-        ),
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+        ChangeNotifierProvider(create: (_) => DailyReminderProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {

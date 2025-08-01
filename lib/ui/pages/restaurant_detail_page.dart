@@ -89,6 +89,16 @@ class RestaurantDetailPage extends StatelessWidget {
                           const SizedBox(height: 8),
                           Text('${restaurant.city}, ${restaurant.address}'),
                           const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 8,
+                            children: restaurant.categories
+                                .map(
+                                  (category) =>
+                                      Chip(label: Text(category.name)),
+                                )
+                                .toList(),
+                          ),
+                          const SizedBox(height: 8),
                           Row(
                             children: [
                               const Icon(Icons.star, color: Colors.amber),

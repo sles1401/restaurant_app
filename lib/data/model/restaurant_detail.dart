@@ -19,6 +19,7 @@ class RestaurantDetail {
   final double rating;
   final List<Category> foods;
   final List<Category> drinks;
+  final List<Category> categories;
 
   RestaurantDetail({
     required this.id,
@@ -30,6 +31,7 @@ class RestaurantDetail {
     required this.rating,
     required this.foods,
     required this.drinks,
+    required this.categories,
   });
 
   factory RestaurantDetail.fromJson(Map<String, dynamic> json) =>
@@ -46,6 +48,9 @@ class RestaurantDetail {
         ),
         drinks: List<Category>.from(
           json["menus"]["drinks"].map((x) => Category.fromJson(x)),
+        ),
+        categories: List<Category>.from(
+          json["categories"].map((x) => Category.fromJson(x)),
         ),
       );
 }
