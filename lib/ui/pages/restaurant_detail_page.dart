@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/model/restaurant_list.dart';
 import '../../provider/restaurant_detail_provider.dart';
 import '../../provider/favorite_provider.dart';
 import '../../utils/result_state.dart';
 import '../../data/api/restaurant_api_service.dart';
-import '../../data/model/restaurant_hive_model.dart';
 import '../widgets/loading_indicator.dart';
 
 class RestaurantDetailPage extends StatelessWidget {
@@ -47,9 +48,10 @@ class RestaurantDetailPage extends StatelessWidget {
                       await favoriteProvider.removeFavorite(restaurant.id);
                     } else {
                       await favoriteProvider.addFavorite(
-                        RestaurantHiveModel(
+                        Restaurant(
                           id: restaurant.id,
                           name: restaurant.name,
+                          description: restaurant.description,
                           pictureId: restaurant.pictureId,
                           city: restaurant.city,
                           rating: restaurant.rating,

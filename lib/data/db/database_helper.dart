@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-import 'database_helper_web.dart'
-    if (dart.library.io) 'package:sqflite/sqflite.dart';
+import 'database_helper_web.dart' show DatabaseHelperWeb;
+import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../../data/model/restaurant_list.dart';
 

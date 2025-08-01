@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import '../data/model/restaurant_hive_model.dart';
+import '../data/db/database_helper.dart';
+import '../data/model/restaurant_list.dart';
 
 enum FavoriteState { Loading, HasData, NoData, Error }
 
 class FavoriteProvider extends ChangeNotifier {
-  late Box<RestaurantHiveModel> _favoriteBox;
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
   FavoriteState _state = FavoriteState.Loading;
 
   FavoriteState get state => _state;
   String _message = '';
   String get message => _message;
 
-  List<RestaurantHiveModel> _favorites = [];
-  List<RestaurantHiveModel> get favorites => _favorites;
+  List<Restaurant> _favorites = [];
+  List<Restaurant> get favorites => _favorites;
 
   Set<String> _favoriteIds = {};
 
@@ -23,8 +23,7 @@ class FavoriteProvider extends ChangeNotifier {
 
   void _init() async {
     try {
-      _favoriteBox = Hive.box<RestaurantHiveModel>('favorite_restaurants');
-      _favorites = _favoriteBox.values.toList();
+      _favorites = await _databaseHelper.getFavorites();
       _favoriteIds = _favorites.map((r) => r.id).toSet();
 
       if (_favorites.isNotEmpty) {
@@ -42,9 +41,9 @@ class FavoriteProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> addFavorite(RestaurantHiveModel restaurant) async {
+  Future<void> addFavorite(Restaurant restaurant) async {
     try {
-      await _favoriteBox.put(restaurant.id, restaurant);
+      await _databaseHelper.insertFavorite(restaurant);
       _favorites.add(restaurant);
       _favoriteIds.add(restaurant.id);
       _state = FavoriteState.HasData;
@@ -58,7 +57,7 @@ class FavoriteProvider extends ChangeNotifier {
 
   Future<void> removeFavorite(String id) async {
     try {
-      await _favoriteBox.delete(id);
+      await _databaseHelper.removeFavorite(id);
       _favorites.removeWhere((r) => r.id == id);
       _favoriteIds.remove(id);
 
