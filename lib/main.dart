@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import 'utils/notification_helper.dart';
 import 'utils/preferences_helper.dart';
 
@@ -37,6 +38,8 @@ Future<void> main() async {
 
   // Inisialisasi timezone & notifikasi
   tz.initializeTimeZones();
+  // Set default timezone to UTC, can be changed based on user preference
+  tz.setLocalLocation(tz.getLocation('UTC'));
   await NotificationHelper().initNotifications();
 
   // Inisialisasi PreferencesHelper untuk ThemeProvider
@@ -63,8 +66,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => FavoriteProvider()),
         ChangeNotifierProvider(create: (_) => DailyReminderProvider()),
       ],
-      child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, _) {
+      child: Builder(
+        builder: (context) {
+          final themeProvider = Provider.of<ThemeProvider>(context);
           return MaterialApp(
             title: 'Restaurant App',
             debugShowCheckedModeBanner: false,
