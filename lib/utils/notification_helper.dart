@@ -2,6 +2,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tzdata;
+import 'package:flutter_timezone/flutter_timezone.dart';
 
 class NotificationHelper {
   static final NotificationHelper _instance = NotificationHelper._internal();
@@ -12,6 +14,13 @@ class NotificationHelper {
       FlutterLocalNotificationsPlugin();
 
   Future<void> initNotifications() async {
+    // Initialize timezone data
+    tzdata.initializeTimeZones();
+
+    // Get device timezone and set local location
+    final String deviceTimeZone = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(deviceTimeZone));
+
     const AndroidInitializationSettings androidInit =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -22,15 +31,7 @@ class NotificationHelper {
     await flutterLocalNotificationsPlugin.initialize(initSettings);
   }
 
-  /// Schedules a daily reminder notification at 11 AM.
-  ///
-  /// On Android 12+ (API 31+), the app requires the
-  /// SCHEDULE_EXACT_ALARM permission declared in AndroidManifest.xml.
-  /// If the permission is not granted by the user in system settings,
-  /// scheduling will fail with a PlatformException 'exact_alarms_not_permitted'.
-  ///
-  /// This method catches that exception and should show a user-friendly
-  /// message guiding the user to enable exact alarms in system settings.
+
   Future<void> scheduleDailyReminder({BuildContext? context}) async {
     try {
       await flutterLocalNotificationsPlugin.zonedSchedule(
