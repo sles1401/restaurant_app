@@ -40,7 +40,9 @@ Future<void> main() async {
   tz.initializeTimeZones();
   // Set default timezone to UTC, can be changed based on user preference
   tz.setLocalLocation(tz.getLocation('UTC'));
-  await NotificationHelper().initNotifications();
+  final notificationHelper = NotificationHelper();
+  await notificationHelper.initNotifications();
+  await notificationHelper.requestNotificationPermission();
 
   // Inisialisasi PreferencesHelper untuk ThemeProvider
   final preferencesHelper = PreferencesHelper();

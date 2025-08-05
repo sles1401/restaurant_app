@@ -1,6 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -31,8 +32,32 @@ class NotificationHelper {
     await flutterLocalNotificationsPlugin.initialize(initSettings);
   }
 
+  Future<bool> requestNotificationPermission() async {
+    if (await Permission.notification.isGranted) {
+      return true;
+    }
+
+    final status = await Permission.notification.request();
+    return status.isGranted;
+  }
+
+  Future<bool> checkNotificationPermission() async {
+    return await Permission.notification.isGranted;
+  }
 
   Future<void> scheduleDailyReminder({BuildContext? context}) async {
+    // Check notification permission first
+    final hasPermission = await checkNotificationPermission();
+    if (!hasPermission) {
+      final granted = await requestNotificationPermission();
+      if (!granted) {
+        if (context != null) {
+          _showNotificationPermissionDialog(context);
+        }
+        return;
+      }
+    }
+
     try {
       await flutterLocalNotificationsPlugin.zonedSchedule(
         0,
@@ -95,6 +120,28 @@ class NotificationHelper {
           content: const Text(
             'Aplikasi membutuhkan izin untuk menjadwalkan alarm tepat waktu. '
             'Silakan aktifkan "Exact Alarms" untuk aplikasi ini di pengaturan sistem.',
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Tutup'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showNotificationPermissionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Izin Notifikasi Diperlukan'),
+          content: const Text(
+            'Untuk dapat menerima pengingat harian, silakan berikan izin notifikasi untuk aplikasi ini.',
           ),
           actions: <Widget>[
             TextButton(

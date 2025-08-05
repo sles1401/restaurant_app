@@ -23,7 +23,16 @@ class DailyReminderProvider extends ChangeNotifier {
     notifyListeners();
 
     if (value) {
-      await NotificationHelper().scheduleDailyReminder();
+      final helper = NotificationHelper();
+      final hasPermission = await helper.checkNotificationPermission();
+      if (hasPermission) {
+        await helper.scheduleDailyReminder();
+      } else {
+        final granted = await helper.requestNotificationPermission();
+        if (granted) {
+          await helper.scheduleDailyReminder();
+        }
+      }
     } else {
       await NotificationHelper().cancelReminder();
     }
